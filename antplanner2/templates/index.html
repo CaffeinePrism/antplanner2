@@ -36,6 +36,7 @@
           <a href="#load" id="load-btn" title="Load schedule"><i class="icon-folder-open icon-large"></i></a>
           <a href="#" id="clear-cal-btn" title="Clear calendar"><i class="icon-remove icon-large"></i></a>
           <a href="#" id="resize-btn" title="Toggle fullscreen"><i class="icon-resize-full icon-large"></i></a>
+          <button id="pushwebsoc-btn" title="Lookup in WebSOC"><i class="icon-arrow-right icon-large"></i></button>
         </div>
       </div>
       <div id="cal"></div>
@@ -224,6 +225,23 @@
           $('#soc').show()
           $('#left').animate({width: '50%'});
           $('i', this).removeClass('icon-resize-small').addClass('icon-resize-full');
+        });
+
+        $('#pushwebsoc-btn').click(function() {
+          var coursecodes = []
+          $('.wc-cal-event').each(function(index, el) {
+            var c = $(el).data().calEvent;
+            if(coursecodes.indexOf(c.groupId) == -1) {
+              coursecodes.push(c.groupId);
+            }
+          });
+          var soc = document.getElementById('soc')
+          soc.src = 'websoc/search';
+          $('#soc').one('load', function() {
+            var socform = soc.contentDocument.forms[0]
+            socform.elements['CourseCodes'].value = coursecodes.join();
+            socform.submit();
+          });
         });
       });
     </script>
