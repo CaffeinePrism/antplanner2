@@ -151,7 +151,7 @@
             });
         });
 
-        $('#save-btn').on('click', function() {
+        $('#save-btn').on('click', function(e) {
           var calData  = JSON.stringify( $('#cal').weekCalendar('serializeEvents') );
 
           var defaultName = localStorage.username ? localStorage.username : '';
@@ -185,9 +185,10 @@
               }
             }
           });
+          e.preventDefault();
         });
 
-        $('#load-btn').on('click', function() {
+        $('#load-btn').on('click', function(e) {
           var defaultName = localStorage.username ? localStorage.username : '';
           var username = prompt('Please enter your username', defaultName);
 
@@ -210,6 +211,7 @@
               }
             }
           });
+          e.preventDefault();
         });
 
         $('#clear-cal-btn').on('click', function() {
@@ -235,9 +237,9 @@
               coursecodes.push(c.groupId);
             }
           });
-          var soc = document.getElementById('soc')
+          var soc = document.getElementById('soc');
           soc.src = 'websoc/search';
-          $('#soc').one('load', function() {
+          $('#soc').ready(function() {
             var socform = soc.contentDocument.forms[0]
             socform.elements['CourseCodes'].value = coursecodes.join();
             socform.submit();
