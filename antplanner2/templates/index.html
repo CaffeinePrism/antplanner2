@@ -78,7 +78,7 @@
 
         $('#cal').weekCalendar('gotoWeek', new Date(APP_YEAR, APP_MONTH, APP_DAY));
 
-        $('#soc').bind('load', function(){
+        $('#soc').on('load', function(){
           var $listingContext = $('.course-list', $('#soc').contents());
           var $courseRow = $("tr[valign*='top']:not([bgcolor='#fff0ff'])", $listingContext);
 
@@ -229,7 +229,7 @@
           $('i', this).removeClass('icon-resize-small').addClass('icon-resize-full');
         });
 
-        $('#pushwebsoc-btn').click(function() {
+        $('#pushwebsoc-btn').on('click', function() {
           var coursecodes = []
           $('.wc-cal-event').each(function(index, el) {
             var c = $(el).data().calEvent;
@@ -239,7 +239,8 @@
           });
           var soc = document.getElementById('soc');
           soc.src = 'websoc/search';
-          $('#soc').ready(function() {
+          $('#soc').one('load', function(e) {
+            soc.contentWindow.history.pushState(null, null, 'websoc/search'); // browser history quirk
             var socform = soc.contentDocument.forms[0]
             socform.elements['CourseCodes'].value = coursecodes.join();
             socform.submit();
