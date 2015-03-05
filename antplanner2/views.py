@@ -1,9 +1,10 @@
 from antplanner2 import app, websoc
-from flask import flash, render_template, request, jsonify
+from flask import flash, render_template, request, jsonify, json
 from google.appengine.api import memcache
 from google.appengine.ext import db
 import logging
 import os
+import urllib, urllib2, json
 
 logger = logging.getLogger(__name__)
 dev_mode = 'SERVER_SOFTWARE' in os.environ and os.environ['SERVER_SOFTWARE'].startswith('Development')
@@ -36,10 +37,14 @@ def websoc_search():
 
 @app.route('/schedules/add', methods=['POST'])
 def save_schedule():
+    url = 'http://antplanner.appspot.com/schedules/add'
     username = request.form.get('username')
     data = request.form.get('data')
+    values = {'username': username, 'data': data}
     try:
-        Schedule(key_name=username, data=data).put()
+        data = urllib.urlencode(values)
+        req = urllib2.Request(url, data)
+        response = urllib2.urlopen(req)
         return jsonify(success=True)
     except:
         return jsonify(success=False)
@@ -47,11 +52,8 @@ def save_schedule():
 @app.route('/schedule/load')
 def load_schedule():
     username = request.args.get('username')
-    schedule = Schedule.get_by_key_name(username)
-    if schedule:
-        return jsonify(success=True, data=schedule.data)
-    else:
-        return jsonify(success=False)
+    response = urllib2.urlopen('http://antplanner.appspot.com/schedule/load?username=' + username)
+    return jsonify(json.load(response))
 
 @app.route('/test')
 def qunit():
@@ -68,4 +70,3 @@ app.jinja_env.globals['dev_mode'] = dev_mode
 class Schedule(db.Model):
     data = db.TextProperty(required=True)
     modified_at = db.DateProperty(required=True, auto_now=True)
-
