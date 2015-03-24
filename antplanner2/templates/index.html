@@ -5,10 +5,9 @@
     <title>Antplanner - A better WebSOC for UCI</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/themes/smoothness/jquery-ui.css">
-    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/3.0/css/font-awesome.css">
     <link rel="stylesheet" href="{{url_for('static', filename="css/jquery.weekcalendar.css")}}">
-    <link rel="stylesheet" href="{{url_for('static', filename="css/antplanner2.css")}}">
-    <!--[if IE 7]><link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/3.0/css/font-awesome-ie7.css"><![endif]-->
+    <link rel="stylesheet" href="{{url_for('static', filename="css/reset.css")}}">
+    <link rel="stylesheet" href="{{url_for('static', filename="css/main.css")}}">
     {% if not dev_mode %}
       <script type="text/javascript">
         var _gaq = _gaq || [];
@@ -27,15 +26,15 @@
     <div id="left">
       <div id="upper">
         <div id="main-nav">
-            <h1>ant<strong>planner</strong><sup>beta</sup></h1>
-            <a href="http://github.com/gumho/antplanner2/wiki/AntPlanner-FAQ" title="Help &amp; FAQ"><i class="icon-question-sign icon-large"></i></a>
+            <h1>Antplanner</h1>
+            <a target="_blank" href="https://github.com/gumho/antplanner2/wiki/AntPlanner-FAQ">?</a>
         </div>
         <div id="cal-ctrl">
-          <a href="#print" onclick="javascript:print()" title="Print schedule"><i class="icon-print icon-large"></i></a>
-          <a href="#save" id="save-btn" title="Save schedule"><i class="icon-save icon-large"></i></a>
-          <a href="#load" id="load-btn" title="Load schedule"><i class="icon-folder-open icon-large"></i></a>
-          <a href="#" id="clear-cal-btn" title="Clear calendar"><i class="icon-remove icon-large"></i></a>
-          <a href="#" id="resize-btn" title="Toggle fullscreen"><i class="icon-resize-full icon-large"></i></a>
+          <button type="button" class="btn" onclick="javascript:print()">Print</button>
+          <button type="button" id="save-btn" class="btn">Save</button>
+          <button type="button" id="load-btn" class="btn">Load</button>
+          <button type="button" id="clear-cal-btn" class="btn">Clear</button>
+          <button type="button" id="resize-btn" class="btn">Size</button>
           <button id="pushwebsoc-btn" title="Lookup in WebSOC"><i class="icon-arrow-right icon-large"></i></button>
         </div>
       </div>
@@ -78,7 +77,7 @@
 
         $('#cal').weekCalendar('gotoWeek', new Date(APP_YEAR, APP_MONTH, APP_DAY));
 
-        $('#soc').on('load', function(){
+        $('#soc').bind('load', function(){
           var $listingContext = $('.course-list', $('#soc').contents());
           var $courseRow = $("tr[valign*='top']:not([bgcolor='#fff0ff'])", $listingContext);
 
@@ -151,7 +150,7 @@
             });
         });
 
-        $('#save-btn').on('click', function(e) {
+        $('#save-btn').on('click', function() {
           var calData  = JSON.stringify( $('#cal').weekCalendar('serializeEvents') );
 
           var defaultName = localStorage.username ? localStorage.username : '';
@@ -185,14 +184,13 @@
               }
             }
           });
-          e.preventDefault();
         });
 
-        $('#load-btn').on('click', function(e) {
+        $('#load-btn').on('click', function() {
           var defaultName = localStorage.username ? localStorage.username : '';
           var username = prompt('Please enter your username', defaultName);
 
-          if(username == null) {
+          if(username == '') {
             return;
           }
 
@@ -211,7 +209,6 @@
               }
             }
           });
-          e.preventDefault();
         });
 
         $('#clear-cal-btn').on('click', function() {
@@ -220,13 +217,13 @@
 
         // TODO: toggle() deprecated
         $('#resize-btn').toggle(function() {
+          $('#cal').animate({width: '200%'});
+          $(this).addClass('active');
           $('#soc').hide();
-          $('#left').animate({width: '100%'});
-          $('i', this).removeClass('icon-resize-full').addClass('icon-resize-small');
         }, function() {
-          $('#soc').show()
-          $('#left').animate({width: '50%'});
-          $('i', this).removeClass('icon-resize-small').addClass('icon-resize-full');
+          $('#cal').animate({width: '100%'});
+          $(this).removeClass('active');
+          $('#soc').show();
         });
 
         $('#pushwebsoc-btn').on('click', function() {
