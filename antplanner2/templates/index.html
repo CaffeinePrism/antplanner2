@@ -35,7 +35,7 @@
           <button type="button" id="load-btn" class="btn">Load</button>
           <button type="button" id="clear-cal-btn" class="btn">Clear</button>
           <button type="button" id="resize-btn" class="btn">Size</button>
-          <button id="pushwebsoc-btn" title="Lookup in WebSOC"><i class="icon-arrow-right icon-large"></i></button>
+          <button type="button" id="pushwebsoc-btn" class="btn">&#8594;</button>
         </div>
       </div>
       <div id="cal"></div>
@@ -59,13 +59,13 @@
           allowCalEventOverlap: true,
           overlapEventsSeparate: true,
           buttons: false,
-          height: function($calendar){ 
-            return $(window).height() - $('#upper').outerHeight(); 
+          height: function($calendar){
+            return $(window).height() - $('#upper').outerHeight();
           },
           draggable : function(calEvent, element) { return false; },
           resizable : function(calEvent, element) { return false; },
           eventClick : function(calEvent, element) {
-            var delCode = calEvent.groupId; 
+            var delCode = calEvent.groupId;
             $('.wc-cal-event').each(function(index, el) {
               var c = $(el).data().calEvent
               if( c.groupId == delCode ) {
@@ -93,7 +93,7 @@
 
             $courseRow.on('click', function() {
               var timeString = $(this).find('td').eq(LISTING_TIME_INDEX).html();
-              
+
               // Ignore if course is "TBA"
               if(timeString.indexOf('TBA') != -1) {
                 alert('Course is TBA');
@@ -137,7 +137,7 @@
                   }
                   $('#cal').weekCalendar("updateEvent", calEvent);
                 }
-              } 
+              }
 
               // Assign a color to the courses
               var colorPair = getRandomColorPair();
@@ -178,7 +178,7 @@
               if(data.success) {
                 alert('Schedule successfully saved!');
                 localStorage.username = username;
-              } 
+              }
               else {
                 alert('Problem saving schedule');
               }
